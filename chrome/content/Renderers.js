@@ -39,7 +39,23 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 Copper.renderText = function(message) {
-	Copper.updateLabel('packet_payload', Copper.bytes2str(message.getPayload()), false);
+  if (message.getContentFormat()==Copper.CONTENT_TYPE_APPLICATION_CBOR) {
+    var msgPayload = message.getPayload();
+    var msgLen = msgPayload.length;
+    var msgBuf = new ArrayBuffer(msgLen);
+    var msguint8s = new Uint8Array(msgBuf);
+
+    for (i = 0; i < msgLen; i++){
+      msguint8s[i] = msgPayload[i];
+    }
+
+    var msgDecoded = CBOR.decode(msgBuf);
+
+   Copper.updateLabel('packet_payload', JSON.stringify(msgDecoded), false);
+  } else {
+   Copper.updateLabel('packet_payload', Copper.bytes2str(message.getPayload()), false);
+  }
+
 	let str = Copper.bytes2str(message.getPayload());
 	if (str.match(/^#[0-9a-f]{3,6}$/i) || str.match(/´rgb\(\s*[0-9]+\s*,\s*[0-9]+\s*,\s*[0-9]+\s*\)$/i)) {
 
