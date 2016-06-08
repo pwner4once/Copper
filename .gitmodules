@@ -1,0 +1,3 @@
+[submodule "chrome/content/cbor"]
+	path = chrome/content/cbor
+	url = https://github.com/paroga/cbor-js.git
